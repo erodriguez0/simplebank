@@ -16,6 +16,7 @@ var testDB *sql.DB
 func TestMain(m *testing.M) {
 	var err error
 
+	// app.env file located at root
 	config, err := util.LoadConfig("../..")
 	if err != nil {
 		log.Fatal("cannot load config: ", err)
