@@ -10,7 +10,7 @@ import (
 
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
+	Currency string `json:"currency" binding:"required,currency"`
 }
 
 func (server *Server) createAccount(ctx *gin.Context) {
@@ -21,9 +21,9 @@ func (server *Server) createAccount(ctx *gin.Context) {
 	}
 
 	arg := db.CreateAccountParams{
-		Owner: req.Owner,
+		Owner:    req.Owner,
 		Currency: req.Currency,
-		Balance: 0,
+		Balance:  0,
 	}
 
 	account, err := server.store.CreateAccount(ctx, arg)
@@ -46,7 +46,7 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	account, err := server.store.GetAccount(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -62,7 +62,7 @@ func (server *Server) getAccount(ctx *gin.Context) {
 }
 
 type listAccountsRequest struct {
-	Page int32 `form:"page" binding:"required,min=1"`
+	Page  int32 `form:"page" binding:"required,min=1"`
 	Limit int32 `form:"limit" binding:"required,min=5,max=10"`
 }
 
@@ -72,9 +72,9 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	arg := db.ListAccountsParams{
-		Limit: req.Limit,
+		Limit:  req.Limit,
 		Offset: (req.Page - 1) * req.Limit,
 	}
 	accounts, err := server.store.ListAccounts(ctx, arg)
